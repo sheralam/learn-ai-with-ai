@@ -1,0 +1,172 @@
+# NLP Basics: Tokenization, Embeddings, Transformers
+
+Prompt:
+Create an article for me explaining the following, target audience mid-level software engineer, provide technical information and examples, briefly describe all points, use graphical examples, add references. Must not be longer that 10 mins read.
+"NLP Basics: Tokenization, Embeddings, Transformers"
+and make a downloadable version in Markdown format
+
+ChatGPT
+# 🔍 NLP Basics: Tokenization, Embeddings, Transformers
+
+Natural Language Processing (NLP) is the field of enabling machines to understand and process human language. This article explains **Tokenization**, **Embeddings**, and **Transformers**, the foundational building blocks of modern NLP systems.
+
+---
+
+## 1. 🧩 Tokenization: Breaking Down Language
+
+**Definition:**  
+Tokenization is the process of splitting text into smaller units (tokens). Tokens can be **words**, **subwords**, or **characters**, depending on the method used.
+
+### Types of Tokenization
+
+| Type           | Example Input              | Tokens                      |
+|----------------|----------------------------|-----------------------------|
+| Word-based     | "ChatGPT is awesome!"      | ["ChatGPT", "is", "awesome!"] |
+| Character-based| "ChatGPT"                  | ["C", "h", "a", "t", "G", "P", "T"] |
+| Subword-based  | "unhappiness"              | ["un", "happi", "ness"]     |
+
+### ⚙ Common Libraries
+- **NLTK** (Natural Language Toolkit)
+- **spaCy**
+- **HuggingFace Tokenizers** (supports BPE, WordPiece, etc.)
+
+### Visual Example
+```
+Sentence: "Transformers revolutionized NLP."
+
+[Tokenization]
+--> ["Transformers", "revolution", "##ized", "NLP", "."]
+```
+
+_Subword tokenization_ handles out-of-vocabulary words by breaking them into known chunks.
+
+---
+
+## 2. 🧠 Embeddings: Representing Text Numerically
+
+**Definition:**  
+Embeddings map tokens to **dense vectors** in a high-dimensional space. These vectors capture semantic meaning.
+
+### Why Not One-Hot Encoding?
+One-hot vectors are sparse and don't reflect meaning. E.g., "dog" and "cat" are unrelated in one-hot form, but similar in embedding space.
+
+### Popular Embeddings
+
+| Model     | Description                                     | Output Dimension |
+|-----------|-------------------------------------------------|------------------|
+| Word2Vec  | Predicts word from context (CBOW/Skip-gram)     | 100–300          |
+| GloVe     | Captures global word co-occurrence statistics   | 50–300           |
+| FastText  | Uses subword information                        | 100–300          |
+| BERT/ELMo | Contextual embeddings based on full sentence    | 768–1024         |
+
+### Visual Example
+```
+Embedding Space (2D Projection):
+
+      dog ●       cat ●       lion ●
+                  car ○       apple ○
+```
+Vectors for similar concepts (animals) are closer.
+
+---
+
+## 3. 🤖 Transformers: Deep Understanding of Language
+
+**Definition:**  
+Transformers are deep learning models introduced in [*Attention is All You Need* (Vaswani et al., 2017)](https://arxiv.org/abs/1706.03762). They use attention mechanisms to model relationships between all tokens in a sequence.
+
+### Key Components
+
+#### a. **Self-Attention**
+Each token attends to others in the sequence to capture context.
+
+Formula:
+```math
+Attention(Q, K, V) = softmax(QK^T / √d_k) V
+```
+
+Where:
+- Q = Query
+- K = Key
+- V = Value
+- \( d_k \) = dimension of key vectors
+
+#### b. **Multi-Head Attention**
+Parallel attention layers capture different types of relationships.
+
+#### c. **Positional Encoding**
+Since Transformers don’t use recurrence, they encode token order via positional embeddings.
+
+### Architecture Diagram
+
+```
+Input --> [Embedding + Positional Encoding] -->
+         [Multi-Head Attention] -->
+         [Feed Forward Network] -->
+         Output
+```
+
+### Example: BERT
+
+| Input              | Embedding (simplified)        |
+|-------------------|-------------------------------|
+| "[CLS] I love AI" | Dense vector representations   |
+| BERT Output        | Context-aware token vectors   |
+
+BERT output for "AI" considers the full sentence, unlike Word2Vec.
+
+---
+
+## 🔄 Flow: From Text to Model
+
+```
+Text --> Tokenizer --> Tokens --> Embeddings --> Transformer --> Prediction
+```
+
+Example: Sentiment Classification
+```
+"I hate bugs."
+→ ["I", "hate", "bugs", "."]
+→ [Embeddings]
+→ Transformer layers
+→ [Negative Sentiment]
+```
+
+---
+
+## 🛠 Code Snippet with HuggingFace
+
+```python
+from transformers import AutoTokenizer, AutoModel
+import torch
+
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+model = AutoModel.from_pretrained("bert-base-uncased")
+
+inputs = tokenizer("NLP is powerful!", return_tensors="pt")
+outputs = model(**inputs)
+
+print(outputs.last_hidden_state.shape)  # (1, sequence_len, hidden_dim)
+```
+
+---
+
+## 📚 References & Further Reading
+
+- Vaswani et al. (2017) [Attention is All You Need](https://arxiv.org/abs/1706.03762)
+- [HuggingFace Transformers](https://huggingface.co/docs/transformers/index)
+- [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- Mikolov et al. (2013) [Word2Vec](https://arxiv.org/abs/1301.3781)
+- [Stanford CS224N - NLP with Deep Learning](http://web.stanford.edu/class/cs224n/)
+
+---
+
+## ✅ Summary
+
+| Concept      | Purpose                           |
+|--------------|-----------------------------------|
+| Tokenization | Split text into units             |
+| Embeddings   | Numeric representation of tokens  |
+| Transformers | Understand and model language     |
+
+Modern NLP applications—from chatbots to code assistants—are built on this powerful trio.
